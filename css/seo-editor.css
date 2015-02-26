@@ -1,0 +1,43 @@
+.cms table.ss-gridfield-table tbody td.col-Title {
+	max-width: 100px;
+}
+
+.seo-editor-valid {
+	background-color: #70AE6E;
+}
+
+.seo-editor-error {
+	background-color: #F15F60;
+	position: relative;
+}
+
+.seo-editor-error:hover {
+	background-color: #f2a1a2;
+}
+
+
+.seo-editor-errors {
+	position: absolute;
+	bottom: 100%;
+}
+
+.seo-editor-message {
+	display: none;
+	position: relative;
+	background-color: #373737;
+	color: #FFFFFF;
+	border: 1px solid #727272;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+/* Error Message States */
+.seo-editor-error-too-short:hover .seo-editor-message-too-short {
+	display: block;
+}
+.seo-editor-error-too-long:hover .seo-editor-message-too-long {
+	display: block;
+}
+.seo-editor-error-duplicate:hover .seo-editor-message-duplicate {
+	display: block;
+}
