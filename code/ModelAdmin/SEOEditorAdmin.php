@@ -45,6 +45,8 @@ class SEOEditorAdmin extends ModelAdmin
         parent::init();
         Requirements::css('silverstripe-seo-editor/css/seo-editor.css');
         Requirements::javascript('silverstripe-seo-editor/javascript/seo-editor.js');
+        
+        if(class_exists('Translatable')) Requirements::javascript('silverstripe-seo-editor/javascript/SEOEditor.Translatable.js');
     }
 
     /**
@@ -62,6 +64,25 @@ class SEOEditorAdmin extends ModelAdmin
             CheckboxField::create('RemoveEmptyMetaTitles', 'Remove Empty MetaTitles'),
             CheckboxField::create('RemoveEmptyMetaDescriptions', 'Remove Empty MetaDescriptions')
         );
+        
+        if(class_exists('Translatable')) {
+            $member = Member::currentUser(); //check to see if the current user can switch langs or not
+    		if(Permission::checkMember($member, 'VIEW_LANGS')) {
+                $field = new LanguageDropdownField(
+    				'locale',
+                    _t('CMSMain.LANGUAGEDROPDOWNLABEL', 'Language')
+    			);
+    			$field->setValue(Translatable::get_current_locale());
+            } else {
+    			// user doesn't have permission to switch langs
+    			// so just show a string displaying current language
+    			$field = new LiteralField(
+    				'locale',
+    				i18n::get_locale_name( Translatable::get_current_locale())
+    			);
+    		}
+            $fields->insertBefore($field, 'Title');
+        }
 
         $context->setFields($fields);
         $filters = array(
@@ -73,7 +94,8 @@ class SEOEditorAdmin extends ModelAdmin
         $context->setFilters($filters);
 
         // Namespace fields, for easier detection if a search is present
-        foreach ($context->getFields() as $field) $field->setName(sprintf('q[%s]', $field->getName()));
+        foreach ($context->getFields() as $field)
+            if($field->getName() != 'locale') $field->setName(sprintf('q[%s]', $field->getName()));
         foreach ($context->getFilters() as $filter) $filter->setFullName(sprintf('q[%s]', $filter->getFullName()));
 
         return $context;
