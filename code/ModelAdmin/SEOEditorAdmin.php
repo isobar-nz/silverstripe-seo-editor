@@ -221,6 +221,10 @@ class SEOEditorAdmin extends ModelAdmin
             return in_array($value, $potentialDuplicateAttributes);
         });
 
+        if (!count($duplicateAttributes)) {
+            return $list;
+        }
+
         return $list->filter(
             array(
                 'ID' => array_keys($duplicateAttributes),
@@ -243,6 +247,10 @@ class SEOEditorAdmin extends ModelAdmin
             return $value == '';
         }, $pageAttributes);
 
+        if (!count($emptyAttributess)) {
+            return $list;
+        }
+        
         return $list->filter(
             array(
                 'ID:not' => array_keys(
