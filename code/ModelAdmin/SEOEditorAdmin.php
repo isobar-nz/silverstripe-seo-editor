@@ -132,8 +132,10 @@ class SEOEditorAdmin extends ModelAdmin
         $form = parent::ImportForm();
         $modelName = $this->modelClass;
 
-        $form->Fields()->removeByName("SpecFor{$modelName}");
-        $form->Fields()->removeByName("EmptyBeforeImport");
+        if ($form) {        
+            $form->Fields()->removeByName("SpecFor{$modelName}");
+            $form->Fields()->removeByName("EmptyBeforeImport");
+        }
 
         return $form;
     }
