@@ -11,7 +11,14 @@
 
                 var $this = $(this);
                 var id = $this.closest('tr').attr('data-id');
-                var url = $this.closest('.ss-gridfield').attr('data-url') + "/update/" + id;
+                var preURL = $this.closest('.ss-gridfield').attr('data-url');
+                var url;
+
+                if(preURL.indexOf('?') != -1)
+                    url = preURL.substr(0, preURL.indexOf('?')) + "/update/" + id + preURL.substr(preURL.indexOf('?'));
+                else
+                    url = preURL + "/update/" + id;
+                    
                 var data = $this.attr('name') + '=' + $(this).val();
 
                 statusMessage('Saving changes', 'good');
