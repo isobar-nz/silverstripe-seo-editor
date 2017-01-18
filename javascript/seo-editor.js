@@ -7,12 +7,12 @@
             onchange: function () {
 
                 // kill the popup for form changes
-                window.onbeforeunload = null;
+                $('.cms-edit-form').removeClass('changed');
 
                 var $this = $(this);
                 var id = $this.closest('tr').attr('data-id');
                 var url = $this.closest('.ss-gridfield').attr('data-url') + "/update/" + id;
-                var data = $this.attr('name') + '=' + $(this).val();
+                var data = encodeURIComponent($this.attr('name')) + '=' + encodeURIComponent($(this).val());
 
                 statusMessage('Saving changes', 'good');
 
