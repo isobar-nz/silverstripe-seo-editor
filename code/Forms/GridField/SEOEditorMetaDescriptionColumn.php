@@ -1,5 +1,18 @@
 <?php
 
+namespace LittleGiant\SEOEditor;
+
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Convert;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+use SilverStripe\Forms\GridField\GridField_HTMLProvider;
+use SilverStripe\Forms\GridField\GridField_URLHandler;
+use SilverStripe\Forms\GridField\GridFieldDataColumns;
+use SilverStripe\Forms\TextareaField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DataObjectInterface;
+
 /**
  * Class SEOEditorMetaDescriptionColumn
  */

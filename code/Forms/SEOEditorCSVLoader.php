@@ -1,5 +1,11 @@
 <?php
 
+namespace LittleGiant\SEOEditor;
+
+use SilverStripe\Core\Convert;
+use SilverStripe\Dev\CsvBulkLoader;
+use SilverStripe\ORM\DB;
+
 /**
  * Class SEOEditorCSVLoader
  */

@@ -1,5 +1,17 @@
 <?php
 
+namespace LittleGiant\SEOEditor;
+
+use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridFieldExportButton;
+use SilverStripe\Forms\TextField;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\Filters\PartialMatchFilter;
+use SilverStripe\ORM\SS_List;
+use SilverStripe\View\Requirements;
+
 /**
  * Class SEOEditorAdmin
  */
@@ -22,13 +34,13 @@ class SEOEditorAdmin extends ModelAdmin
      * @var array
      */
     private static $managed_models = array(
-        'SiteTree'
+        'SilverStripe\CMS\Model\SiteTree'
     );
     /**
      * @var array
      */
     private static $model_importers = array(
-        'SiteTree' => 'SEOEditorCSVLoader'
+        'SilverStripe\CMS\Model\SiteTree' => 'LittleGiant\SEOEditor\SEOEditorCSVLoader'
     );
     /**
      * @var array
@@ -88,6 +100,10 @@ class SEOEditorAdmin extends ModelAdmin
     {
         $form = parent::getEditForm($id, $fields);
 
+//        TODO GridField Config - ComponentByType Logic update
+//        $grid = $form->Fields()->dataFieldByName('SilverStripe-CMS-Model-SiteTree');
+//        var_dump($grid->list->items);
+//        die();
         $grid = $form->Fields()->dataFieldByName('SiteTree');
         if ($grid) {
             $config = $grid->getConfig();
@@ -97,6 +113,7 @@ class SEOEditorAdmin extends ModelAdmin
             $config->removeComponentsByType('GridFieldExportButton');
             $config->removeComponentsByType('GridFieldDeleteAction');
 
+            // TODO - ID relation SilverStripe\CMS\Model\SiteTree
             $config->getComponentByType('GridFieldDataColumns')->setDisplayFields(
                 array(
                     'ID' => 'ID',
@@ -118,7 +135,6 @@ class SEOEditorAdmin extends ModelAdmin
 
             $config->addComponent(new SEOEditorMetaTitleColumn());
             $config->addComponent(new SEOEditorMetaDescriptionColumn());
-
         }
 
         return $form;
