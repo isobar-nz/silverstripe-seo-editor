@@ -5,12 +5,19 @@ namespace LittleGiant\SEOEditor;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
+use SilverStripe\Forms\GridField\GridFieldDataColumns;
+use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Forms\GridField\GridFieldExportButton;
+use SilverStripe\Forms\GridField\GridFieldPrintButton;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\View\Requirements;
+use SilverStripe\ORM\Search\SearchContext;
+
 
 /**
  * Class SEOEditorAdmin
@@ -91,50 +98,43 @@ class SEOEditorAdmin extends ModelAdmin
         return $context;
     }
 
-    /**
-     * @param null $id
-     * @param null $fields
-     * @return mixed
-     */
     public function getEditForm($id = null, $fields = null)
     {
         $form = parent::getEditForm($id, $fields);
 
-//        TODO GridField Config - ComponentByType Logic update
-//        $grid = $form->Fields()->dataFieldByName('SilverStripe-CMS-Model-SiteTree');
-//        var_dump($grid->list->items);
-//        die();
-        $grid = $form->Fields()->dataFieldByName('SiteTree');
-        if ($grid) {
-            $config = $grid->getConfig();
-            $config->removeComponentsByType('GridFieldAddNewButton');
-            $config->removeComponentsByType('GridFieldPrintButton');
-            $config->removeComponentsByType('GridFieldEditButton');
-            $config->removeComponentsByType('GridFieldExportButton');
-            $config->removeComponentsByType('GridFieldDeleteAction');
+        $grid = $form->Fields()->dataFieldByName('SilverStripe-CMS-Model-SiteTree');
+        $gridField = $grid->getConfig();
+        if ($gridField) {
+            $gridField->removeComponentsByType(GridFieldAddNewButton::class);
+            $gridField->removeComponentsByType(GridFieldPrintButton::class);
+            $gridField->removeComponentsByType(GridFieldEditButton::class);
+            $gridField->removeComponentsByType(GridFieldExportButton::class);
+            $gridField->removeComponentsByType(GridFieldDeleteAction::class);
 
-            // TODO - ID relation SilverStripe\CMS\Model\SiteTree
-            $config->getComponentByType('GridFieldDataColumns')->setDisplayFields(
-                array(
+            $gridField->getComponentByType(GridFieldDataColumns::class)->setDisplayFields(
+                [
                     'ID' => 'ID',
                     'Title' => 'Title',
-                )
+                    'MetaTitle' => 'MetaTitle',
+                    'MetaDescription' => 'MetaDescription'
+                ]
             );
 
-            $config->addComponent(
+            $gridField->addComponent(
                 new GridFieldExportButton(
                     'before',
-                    array(
+                    [
                         'ID' => 'ID',
                         'Title' => 'Title',
                         'MetaTitle' => 'MetaTitle',
                         'MetaDescription' => 'MetaDescription'
-                    )
+                    ]
                 )
             );
 
-            $config->addComponent(new SEOEditorMetaTitleColumn());
-            $config->addComponent(new SEOEditorMetaDescriptionColumn());
+//            TODO WHY DOES THIS NOT WORK?
+//            $gridField->addComponent(new SEOEditorMetaTitleColumn);
+//            $gridField->addComponent(new SEOEditorMetaDescriptionColumn());
         }
 
         return $form;
@@ -148,7 +148,7 @@ class SEOEditorAdmin extends ModelAdmin
         $form = parent::ImportForm();
         $modelName = $this->modelClass;
 
-        if ($form) {        
+        if ($form) {
             $form->Fields()->removeByName("SpecFor{$modelName}");
             $form->Fields()->removeByName("EmptyBeforeImport");
         }
@@ -268,13 +268,13 @@ class SEOEditorAdmin extends ModelAdmin
         if (!count($emptyAttributess)) {
             return $list;
         }
-        
+
         return $list->filter(
             array(
                 'ID:not' => array_keys(
                     array_filter($emptyAttributess, function ($value) {
-                            return $value == 1;
-                        }
+                        return $value == 1;
+                    }
                     )
                 )
             )
