@@ -1,6 +1,6 @@
 <?php
 
-namespace LittleGiant\SEOEditor;
+namespace LittleGiant\SEOEditor\Forms;
 
 use SilverStripe\Core\Convert;
 use SilverStripe\Dev\CsvBulkLoader;
@@ -15,9 +15,9 @@ class SEOEditorCSVLoader extends CsvBulkLoader
     /**
      * @var array
      */
-    public $duplicateChecks = array(
+    public $duplicateChecks = [
         'ID' => 'ID',
-    );
+    ];
 
     /**
      * Update the columns needed when importing from CSV
