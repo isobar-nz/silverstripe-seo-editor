@@ -1,13 +1,28 @@
 <?php
 
+namespace LittleGiant\SEOEditor\Forms\GridField;
+
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Convert;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+use SilverStripe\Forms\GridField\GridField_HTMLProvider;
+use SilverStripe\Forms\GridField\GridField_URLHandler;
+use SilverStripe\Forms\GridField\GridFieldDataColumns;
+use SilverStripe\Forms\TextareaField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DataObjectInterface;
+use SilverStripe\ORM\DB;
+
 /**
- * Class SEOEditorMetaTitleColumn
+ * Class SEOEditorMetaDescriptionColumn
  */
-class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
+class SEOEditorMetaDescriptionColumn extends GridFieldDataColumns implements
     GridField_ColumnProvider,
     GridField_HTMLProvider,
     GridField_URLHandler
 {
+
 
     /**
      * Modify the list of columns displayed in the table.
@@ -20,7 +35,7 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
      */
     public function augmentColumns($gridField, &$columns)
     {
-        $columns[] = 'MetaTitle';
+        $columns[] = 'MetaDescription';
     }
 
     /**
@@ -31,7 +46,9 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
      */
     public function getColumnsHandled($gridField)
     {
-        return array('MetaTitle');
+        return [
+            'MetaDescription'
+        ];
     }
 
     /**
@@ -45,12 +62,14 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
     public function getColumnAttributes($gridField, $record, $columnName)
     {
         $errors = $this->getErrors($record);
-        return array(
+
+        return [
             'class' => count($errors)
-                    ? 'seo-editor-error ' . implode(' ', $errors)
-                    : 'seo-editor-valid'
-        );
+                ? 'seo-editor-error ' . implode(' ', $errors)
+                : 'seo-editor-valid'
+        ];
     }
+
 
     /**
      * HTML for the column, content of the <td> element.
@@ -62,11 +81,12 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
      */
     public function getColumnContent($gridField, $record, $columnName)
     {
-        $field = new TextField('MetaTitle');
+        $field = new TextareaField('MetaDescription');
         $value = $gridField->getDataFieldValue($record, $columnName);
         $value = $this->formatValue($gridField, $record, $columnName, $value);
         $field->setName($this->getFieldName($field->getName(), $gridField, $record));
         $field->setValue($value);
+        $field->setAttribute('data-name', 'MetaDescription');
 
         return $field->Field() . $this->getErrorMessages();
     }
@@ -81,28 +101,28 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
      */
     public function getColumnMetadata($gridField, $column)
     {
-        return array(
-            'title' => 'MetaTitle',
-        );
+        return [
+            'title' => 'MetaDescription',
+        ];
     }
 
     /**
-     * Get the errors which are specific to MetaTitle
+     * Get the errors which are specific to MetaDescription
      *
      * @param DataObject $record
      * @return array
      */
     public function getErrors(DataObject $record)
     {
-        $errors = array();
+        $errors = [];
 
-        if (strlen($record->MetaTitle) < 10) {
+        if (strlen($record->MetaDescription) < 10) {
             $errors[] = 'seo-editor-error-too-short';
         }
-        if (strlen($record->MetaTitle) > 55) {
+        if (strlen($record->MetaDescription) > 160) {
             $errors[] = 'seo-editor-error-too-long';
         }
-        if (strlen(SiteTree::get()->filter('MetaTitle', $record->MetaTitle)->count() > 1)) {
+        if (strlen(SiteTree::get()->filter('MetaDescription', $record->MetaDescription)->count() > 1)) {
             $errors[] = 'seo-editor-error-duplicate';
         }
 
@@ -116,12 +136,11 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
      */
     public function getErrorMessages()
     {
-            return '<div class="seo-editor-errors">' .
-                        '<span class="seo-editor-message seo-editor-message-too-short">This title is too short. It should be greater than 10 characters long.</span>' .
-                        '<span class="seo-editor-message seo-editor-message-too-long">This title is too long. It should be less than 55 characters long.</span>' .
-                        '<span class="seo-editor-message seo-editor-message-duplicate">This title is a duplicate. It should be unique.</span>' .
-                    '</div>'
-                ;
+        return '<div class="seo-editor-errors">' .
+            '<span class="seo-editor-message seo-editor-message-too-short">This meta description is too short. It should be greater than 10 characters long.</span>' .
+            '<span class="seo-editor-message seo-editor-message-too-long">This meta description is too long. It should be less than 160 characters long.</span>' .
+            '<span class="seo-editor-message seo-editor-message-duplicate">This meta description is a duplicate. It should be unique.</span>' .
+            '</div>';
     }
 
     /**
@@ -148,6 +167,7 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
         );
     }
 
+
     /**
      * Return URLs to be handled by this grid field, in an array the same form as $url_handlers.
      * Handler methods will be called on the component, rather than the grid field.
@@ -157,9 +177,9 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
      */
     public function getURLHandlers($gridField)
     {
-        return array(
-            'update/$ID' => 'handleAction',
-        );
+        return [
+            'updateMetaDescription/$ID' => 'handleAction',
+        ];
     }
 
     /**
@@ -181,22 +201,18 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
                 if ($page->isPublished()) {
                     DB::query("UPDATE SiteTree_Live SET {$fieldName} = '{$sqlValue}' WHERE ID = {$page->ID}");
                 }
-            }
 
-            return json_encode(
-                array(
+                return json_encode([
                     'type' => 'good',
                     'message' => $fieldName . ' saved',
                     'errors' => $this->getErrors($page)
-                )
-            );
+                ]);
+            }
         }
 
-        return json_encode(
-            array(
-                'type' => 'bad',
-                'message' => 'An error occurred while saving'
-            )
-        );
+        return json_encode([
+            'type' => 'bad',
+            'message' => 'An error occurred while saving'
+        ]);
     }
 }

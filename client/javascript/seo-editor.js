@@ -11,17 +11,16 @@
 
                 var $this = $(this);
                 var id = $this.closest('tr').attr('data-id');
-                var url = $this.closest('.ss-gridfield').attr('data-url') + "/update/" + id;
+                var url = $this.closest('.ss-gridfield').attr('data-url') + "/update" + $this.attr('data-name') + "/" + id;
                 var data = encodeURIComponent($this.attr('name')) + '=' + encodeURIComponent($(this).val());
 
-                statusMessage('Saving changes', 'good');
+                // statusMessage('Saving changes', 'good');
 
                 $.post(
                     url,
                     data,
                     function (data, textStatus) {
-                        statusMessage(data.message, data.type);
-
+                        // statusMessage(data.message, data.type);
                         $this.closest('td').removeClass();
                         if (data.errors.length) {
                             $this.closest('td').addClass('seo-editor-error');

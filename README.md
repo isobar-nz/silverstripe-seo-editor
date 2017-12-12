@@ -17,7 +17,7 @@ $ composer require littlegiant/silverstripe-seo-editor
 
 ## License
 
-SilverStripe SEO  is released under the MIT license
+SilverStripe SEO is released under the MIT license
 
 ## Contributing
 
