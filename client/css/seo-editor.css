@@ -1,43 +1,49 @@
-.cms table.ss-gridfield-table tbody td.col-Title {
-	max-width: 100px;
+.cms table.grid-field__table tbody td.col-Title {
+    max-width: 8rem;
 }
 
-.seo-editor-valid {
-	background-color: #70AE6E;
+/**
+ * @desc Remove the hover background color from the grid-field items, as they're distracting.
+ */
+.cms tbody tr:hover,
+.cms .table tbody tr.even:hover,
+.cms .table tbody tr:hover {
+    background-color: transparent;
 }
 
-.seo-editor-error {
-	background-color: #F15F60;
-	position: relative;
+/**
+ * @desc Add a border, and box-shadow to the inputs in an error state.
+ */
+.cms .seo-editor-error input,
+.cms .seo-editor-error input:hover,
+.cms .seo-editor-error input:focus,
+.cms .seo-editor-error textarea,
+.cms .seo-editor-error textarea:hover,
+.cms .seo-editor-error textarea:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.3em rgba(220, 53, 69, .5);
 }
-
-.seo-editor-error:hover {
-	background-color: #f2a1a2;
-}
-
 
 .seo-editor-errors {
-	position: absolute;
-	bottom: 100%;
+    font-size: smaller;
+    margin-top: 1em;
+    color: #dc3545;
 }
 
+/* Hide the messages until the parent has the appropriate class */
 .seo-editor-message {
-	display: none;
-	position: relative;
-	background-color: #373737;
-	color: #FFFFFF;
-	border: 1px solid #727272;
-	border-radius: 10px;
-	padding: 10px;
+    display: none;
 }
 
-/* Error Message States */
-.seo-editor-error-too-short:hover .seo-editor-message-too-short {
-	display: block;
+.seo-editor-error-too-short .seo-editor-message-too-short {
+    display: block;
 }
-.seo-editor-error-too-long:hover .seo-editor-message-too-long {
-	display: block;
+
+.seo-editor-error-too-long .seo-editor-message-too-long {
+    display: block;
 }
-.seo-editor-error-duplicate:hover .seo-editor-message-duplicate {
-	display: block;
+
+.seo-editor-error-duplicate .seo-editor-message-duplicate {
+    display: block;
 }
+

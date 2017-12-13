@@ -47,7 +47,7 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
     public function getColumnsHandled($gridField)
     {
         return [
-            'MetaTitle'
+            'MetaTitle',
         ];
     }
 
@@ -62,6 +62,7 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
     public function getColumnAttributes($gridField, $record, $columnName)
     {
         $errors = $this->getErrors($record);
+
         return [
             'class' => count($errors)
                 ? 'seo-editor-error ' . implode(' ', $errors)
@@ -200,16 +201,16 @@ class SEOEditorMetaTitleColumn extends GridFieldDataColumns implements
                 }
 
                 return json_encode([
-                    'type' => 'good',
+                    'type'    => 'success',
                     'message' => $fieldName . ' saved',
-                    'errors' => $this->getErrors($page)
+                    'errors'  => $this->getErrors($page),
                 ]);
             }
         }
 
         return json_encode([
-            'type' => 'bad',
-            'message' => 'An error occurred while saving'
+            'type'    => 'error',
+            'message' => 'An error occurred while saving',
         ]);
     }
 }
