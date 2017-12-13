@@ -5,7 +5,7 @@ interface.
 
 Edit inline, or download a CSV export and import changes.
 
-![SilverStripe SEO Editor](https://raw.github.com/little-giant/silverstripe-seo-editor/master/images/preview.jpg)
+![SilverStripe SEO Editor](https://raw.github.com/little-giant/silverstripe-seo-editor/master/images/preview.png)
 
 ## Installation
 
